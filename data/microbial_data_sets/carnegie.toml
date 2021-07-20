@@ -1,0 +1,108 @@
+# NPLinker configuration file
+# ---------------------------
+
+# general options
+# log level (DEBUG/INFO/WARNING/ERROR)
+loglevel = "DEBUG"
+logfile = ""
+repro_file = ""
+
+# Dataset configuration
+# ---------------------
+#
+# Generally speaking the dataset layout the application expects matches the structure
+# of the output from a GNPS job with TODO TODO TODO settings, plus a few extra
+# files from other sources. If you have a dataset in the required structure, 
+# typically all you will need to do is tell nplinker where the root directory
+# is located. Otherwise you can customise the locations of the individual elements
+# using the various override settings below. 
+#
+# The layout is as follows (see the documentation for more details):
+# <root>
+#   |   (METABOLOMICS DATA)
+#   |- clusterinfo_summary/<UID>.tsv (spectrum metadata)
+#   |- metadata_table/metadata_table-00000.txt (TODO)
+#   |- networkedges_selfloop/<UID>.selfloop (the "edges" file for spectra network)
+#   |- quantification_table/quantification_table-00000.csv (original MS1 data, optional? TODO)
+#   |- "extra" spectrum metadata .csv file TODO
+#       (GENOMICS DATA)
+#   |- antismash/*.gbk (antiSMASH GenBank files for the BGCs in the dataset)
+#   |- bigscape/<classes subfolders> (BiG-SCAPE clustering/annotation files in their subfolders)
+[dataset]
+# if the dataset has the expected directory structure, this is all that's required
+# root = "/mnt/archive/nplinker_data/crusemann_new_ren"
+root = "/home/grimur/iokr_verify_data/carnegie"
+# platform_id="MSV000085038"
+platform_id=""
+
+# antismash file structure. 'default' corresponds to the unaltered antismash default output
+# format, with nested directories for each strain
+# 'flat' is a deprecated option which expects to find all the .gbk files for each BGC in a
+# single flat directory 
+antismash_format = "default"
+
+# can also override any combination of individual file paths as required (empty
+# paths are ignored)
+[dataset.overrides]
+# MGF filename. This path is passed to glob.glob, default is <root>/spectra/*.mgf
+#mgf_file = ""
+#mgf_file="/home/grimur/iokr_verify_data/oneill/metabolomics/METABOLOMICS-SNETS-V2-840eadb0-download_clustered_spectra-main.mgf"
+
+# nodes filename. This path is passed to glob.glob, default is <root>/clusterinfo_summary/*.tsv
+#nodes_file = ""
+# nodes_file="/home/grimur/iokr_verify_data/oneill/metabolomics/clusterinfosummarygroup_attributes_withIDs_withcomponentID/00341684609e45738dcd78260bed2ce4.clustersummary"
+
+# don't know what to call this yet TODO
+# "extra" spectrum metadata file, default is <root>/*.csv
+#extra_nodes_file = ""
+
+# edges filename. This path is passed to glob.glob, default is <root>/networkedges_selfloop/*.selfloop
+#edges_file = ""
+# edges_file="/home/grimur/iokr_verify_data/oneill/metabolomics/networkedges_selfloop/3c88014f6df240a3b793beb3dc65fce8..selfloop"
+
+# metadata table filename. This path is passed to glob.glob, default is <root>/metadata_table/metadata_table-*.txt
+#metadata_table_file = ""
+
+# quantification table filename. This path is passed to glob.glob, default is <root>/quantification_table/quantification_table-*.csv
+#quantification_table_file = "/home/grimur/data-crusemann/nplinker_crusemann_26112019/quantification_table/quantification_table.csv"
+
+# Antismash data directory, default is <root>/antismash
+# all .gbk files inside the directory will be loaded (non-recursively, a flat structure is required!)
+#antismash_dir = ""
+antismash_dir = "/home/grimur/iokr_verify_data_clean/gerwick/antismash-5b"
+
+# bigscape directory, default is <root>/bigscape
+# it's expected that the various class subdirectory (NRPS etc) will exist at this location.
+# within each class subdirectory, there should be a Network_Annotations_<class>.tsv file plus
+# a single <class>_clustering_<params>.tsv file.
+#bigscape_dir = "/home/grimur/data-crusemann/bigscape-crusemann-as5-ren/network_files/2019-09-02_10-24-46_hybrids_glocal/"
+bigscape_dir="/home/grimur/iokr_verify_data_clean/gerwick/bigscape/network_files/2020-03-05_09-49-06_hybrids_glocal/"
+
+# OPTIONAL
+# directory containing MiBIG .json files, default is <root>/mibig_json
+# (if you want to include this, download the latest archive in JSON format
+# from https://mibig.secondarymetabolites.org/download and extract the contents)
+#mibig_json_dir = ""
+mibig_json_dir="/home/grimur/iokr_verify_data_clean/duncan/mibig_json/"
+
+# Scoring configuration
+[scoring]
+# number of randomized instances to create during scoring
+# increasing this number will slow down the scoring process!
+random_count = 20
+
+# metcalf scoring
+[scoring.metcalf]
+sig_percentile = 99
+enabled = true
+
+# hypergeometric scoring
+[scoring.hg]
+prob = 0.99
+enabled = true
+
+# likescore scoring
+[scoring.likescore]
+cutoff = 0.8
+enabled = true
+
